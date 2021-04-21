@@ -24,19 +24,25 @@ header {
     font-size: 1rem;
 }
 
-input {
+.age {
     border: 0.5px solid #ccc;
     border-radius: 6px;
-    width: 4rem;
-    height: 4rem;
+    padding: 10px;
     font-size: 2rem;
 }
 
-.btn {
+.month, .day {
+    border: 0.5px solid #ccc;
+    border-radius: 6px;
+    padding: 10px;
+    font-size: 2rem;
+}
+
+.research {
     display: inline-block;
     max-width: 180px;
     text-align: left;
-    background-color: #9ec34b;
+    background-color: #336699;
     font-size: 16px;
     color: #FFF;
     text-decoration: none;
@@ -44,17 +50,73 @@ input {
     padding: 8px 16px 8px 32px;
     border-radius: 4px;
     position: relative;
-  }
+}
   
-  .btn:before {
+.research:before {
     font-family: "FontAwesome";
     content: "\f002";
     position: absolute;
     left: 16px;
-    top: 50%;
-    margin-top: -8px;
-  }
-  
-  .btn:hover {
+}
+
+.research:hover {
     opacity: 0.8;
-  }
+}
+
+main h1 {
+    position: relative;
+    padding: 0.25em 0;
+    font-size: 1.5rem;
+    font-family: 'RocknRoll One', sans-serif;
+}
+main h1:after {
+content: "";
+display: block;
+height: 4px;
+background: -webkit-linear-gradient(to right, #336699, transparent 70%);
+background: linear-gradient(to right, #336699, transparent 70%);
+}
+
+main h2 {
+    margin-left: 1rem;
+    font-size: 1.2rem;
+}
+
+main p {
+    margin-left: 2rem;
+}
+
+/* トップへ戻るボタン */
+#page_top{
+    width: 50px;
+    height: 50px;
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    background: #3f98ef;
+    opacity: 0.6;
+    border-radius: 50%;
+}
+#page_top a{
+    position: relative;
+    display: block;
+    width: 50px;
+    height: 50px;
+    text-decoration: none;
+}
+#page_top a::before{
+    font-family: 'Font Awesome 5 Free';
+    font-weight: 900;
+    content: '\f102';
+    font-size: 25px;
+    color: #fff;
+    position: absolute;
+    width: 25px;
+    height: 25px;
+    top: -15px;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    margin: auto;
+    text-align: center;
+}
