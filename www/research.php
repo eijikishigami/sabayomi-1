@@ -1,13 +1,33 @@
 <?php
 require_once('convertible-year.php');
+require_once('culc-eto.php');
+
+const ENTRY_JR_HI_SCL_YEAR_AGE = 13;
+const GRADUATE_JR_HI_SCL_YEAR_AGE = 16;
+const ENTRY_HI_SCL_YEAR_AGE = 16;
+const GRADUATE_HI_SCL_YEAR_AGE = 19;
+const ENTRY_UNIV_YEAR_AGE = 19;
+const GRADUATE_UNIV_YEAR_AGE = 23;
 
 $age = $_POST['age'];
 $now = new DateTime('now');
+// $now = new DateTime('2021-04-25');
+
 $birth_month = $_POST['month'];
 $birth_day = $_POST['day'];
 $birth_year = new Convertible_Year(culc_year($now, $age, $birth_month, $birth_day, 0));
+$eto = Culc_Eto::culc($birth_year->get_west())->get_name();
+$entry_jr_hi_scl_year = new Convertible_Year(culc_school_year($now, $age, $birth_month, $birth_day, ENTRY_JR_HI_SCL_YEAR_AGE));
+$graduate_jr_hi_scl_year = new Convertible_Year(culc_school_year($now, $age, $birth_month, $birth_day, GRADUATE_JR_HI_SCL_YEAR_AGE));
+$entry_hi_scl_year = new Convertible_Year(culc_school_year($now, $age, $birth_month, $birth_day, ENTRY_HI_SCL_YEAR_AGE));
+$graduate_hi_scl_year = new Convertible_Year(culc_school_year($now, $age, $birth_month, $birth_day, GRADUATE_HI_SCL_YEAR_AGE));
+$entry_univ_year = new Convertible_Year(culc_school_year($now, $age, $birth_month, $birth_day, ENTRY_UNIV_YEAR_AGE));
+$graduate_univ_year = new Convertible_Year(culc_school_year($now, $age, $birth_month, $birth_day, GRADUATE_UNIV_YEAR_AGE));
+$school_grade = culc_school_grade($now, $age, $birth_month, $birth_day);
+$society_history_hi_scl = culc_society_history($now, $age, $birth_month, $birth_day, GRADUATE_HI_SCL_YEAR_AGE); // 高卒社会人歴
+$society_history_univ = culc_society_history($now, $age, $birth_month, $birth_day, GRADUATE_UNIV_YEAR_AGE); // 大卒社会人歴
 
-function culc_year($now, $now_age, $birth_month, $birth_day, $culc_age) {
+function culc_year(DateTime $now, int $now_age, int $birth_month, int $birth_day, int $culc_age): int {
     $now_year = $now->format('Y');
     $result = $now_year - ($now_age - $culc_age);
     $birth_md = ($birth_month * 100) + $birth_day;
@@ -16,6 +36,72 @@ function culc_year($now, $now_age, $birth_month, $birth_day, $culc_age) {
     }
     return $result;
 }
+function culc_school_year(DateTime $now, int $now_age, int $birth_month, int $birth_day, int $culc_age): int {
+    if (($birth_month * 100) + $birth_day <= 401) {
+        // 誕生日が4月1日以前である場合
+        $culc_year = culc_year($now, $now_age, $birth_month, $birth_day, $culc_age - 1);
+    } else {
+        $culc_year = culc_year($now, $now_age, $birth_month, $birth_day, $culc_age);
+    }
+    return $culc_year;
+}
+
+function culc_school_grade(DateTime $now, int $now_age, int $birth_month, int $birth_day): string {
+
+    $now_md = $now->format('md');
+    if ($now_md <= 401) {
+        $now_md += 1200;    // 4月1日以前は繰り上げ。ex:3/25→15/25
+    }
+    $birth_md = ($birth_month * 100) + $birth_day;
+    if ($birth_md <= 401) {
+        $birth_md += 1200;    // 4月1日以前は繰り上げ。ex:3/25→15/25
+    }
+    if ($now_md < $birth_md) {
+        // まだ誕生日がきていない場合
+        $now_age++;
+    }
+
+    if ($now_age >= GRADUATE_UNIV_YEAR_AGE) {
+        return '-';
+    } else if ($now_age >= ENTRY_UNIV_YEAR_AGE) {
+        $school_name = '大学';
+        $school_grade = $now_age - ENTRY_UNIV_YEAR_AGE + 1;
+    } else if ($now_age >= ENTRY_HI_SCL_YEAR_AGE) {
+        $school_name = '高校';
+        $school_grade = $now_age - ENTRY_HI_SCL_YEAR_AGE + 1;
+    } else if ($now_age >= ENTRY_JR_HI_SCL_YEAR_AGE) {
+        $school_name = '中学';
+        $school_grade = $now_age - ENTRY_JR_HI_SCL_YEAR_AGE + 1;
+    } else {
+        return '小学校卒業以前';
+    }
+
+    return $school_name . $school_grade . '年生';
+}
+
+function culc_society_history(DateTime $now, int $now_age, int $birth_month, int $birth_day, $graduate_age): string {
+    $now_md = $now->format('md');
+    if ($now_md <= 401) {
+        $now_md += 1200;    // 4月1日以前は繰り上げ。ex:3/25→15/25
+    }
+    $birth_md = ($birth_month * 100) + $birth_day;
+    if ($birth_md <= 401) {
+        $birth_md += 1200;    // 4月1日以前は繰り上げ。ex:3/25→15/25
+    }
+    if ($now_md < $birth_md) {
+        // まだ誕生日がきていない場合
+        $now_age++;
+    }
+
+    if ($now_age < $graduate_age) {
+        return '卒業以前';
+    } else {
+        $society_year = $now_age - $graduate_age + 1;
+    }
+
+    return '社会人' . $society_year . '年目';
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -38,7 +124,10 @@ function culc_year($now, $now_age, $birth_month, $birth_day, $culc_age) {
 
 <body>
     <header>
-        <h1 class="page-title">年齢サバ読みサポート</h1>
+        <div class="container">
+            <h1 class="page-title">年齢サバ読みサポート</h1>
+            <p class="page-desc">年齢を入力すると生年月日、干支、入学卒業の年などを割り出します</p>
+        </div>
     </header>
     <main>
         <div class="container">
@@ -52,54 +141,79 @@ function culc_year($now, $now_age, $birth_month, $birth_day, $culc_age) {
             </div>
             <div>
                 <h1>生まれ年</h1>
-                <p>
+                <p class="answer">
                     <?php
-                        echo "{$birth_year->get_west()}年({$birth_year->get_jp()})生まれ";
+                        echo "{$birth_year->get_west()}年({$birth_year->get_jp()})生まれ。{$eto}どし。";
                     ?>
                 </p>
             </div>
             <div>
                 <h1>現在の学年</h1>
-                <p>高校3年生</p>
+                <p><?php echo $school_grade; ?></p>
             </div>
             <div>
                 <h1>現在の社会人歴</h1>
-                <p>高卒の場合、社会人０年目</p>
-                <p>大卒(現役卒業)の場合、社会人０年目</p>
+                <div>
+                    <p>高卒の場合、<?php echo $society_history_hi_scl ?></p>
+                    <p>大卒(現役卒業)の場合、<?php echo $society_history_univ ?></p>
+                </div>
             </div>
             <div>
                 <h1>入学・卒業年月</h1>
             </div>
             <div>
                 <h2>中学入学</h2>
-                <p>2016年(平成28年)4月入学</p>
+                <p>
+                    <?php
+                        echo "{$entry_jr_hi_scl_year->get_west()}年({$entry_jr_hi_scl_year->get_jp()})4月入学";
+                    ?>
+                </p>
             </div>
             <div>
                 <h2>中学卒業</h2>
-                <p>2019年(平成31年)3月卒業</p>
+                <p>
+                    <?php
+                        echo "{$graduate_jr_hi_scl_year->get_west()}年({$graduate_jr_hi_scl_year->get_jp()})3月卒業";
+                    ?>
+                </p>
             </div>
             <div>
                 <h2>高校入学</h2>
-                <p>2019年(平成31年)4月入学</p>
+                <p>
+                    <?php
+                        echo "{$entry_hi_scl_year->get_west()}年({$entry_hi_scl_year->get_jp()})4月入学";
+                    ?>
+                </p>
             </div>
             <div>
                 <h2>高校卒業</h2>
-                <p>2022年(令和4年)3月卒業</p>
+                <p>
+                    <?php
+                        echo "{$graduate_hi_scl_year->get_west()}年({$graduate_hi_scl_year->get_jp()})3月卒業";
+                    ?>
+                </p>
             </div>
             <div>
-                <h2>大学入学(現役)</h2>
-                <p>2022年(令和4年)4月入学</p>
+                <h2>大学入学</h2>
+                <p>
+                    <?php
+                        echo "{$entry_univ_year->get_west()}年({$entry_univ_year->get_jp()})4月入学";
+                    ?>
+                </p>
             </div>
             <div>
-                <h2>大学卒業(4年制・現役)</h2>
-                <p>2026年(令和8年)3月卒業</p>
+                <h2>大学卒業(4年制)</h2>
+                <p>
+                    <?php
+                        echo "{$graduate_univ_year->get_west()}年({$graduate_univ_year->get_jp()})3月卒業";
+                    ?>
+                </p>
             </div>
+            <div id="page_top"><a href="#"></a></div>
         </div>
     </main>
     <footer>
     </footer>
-    <div id="page_top"><a href="#"></a></div>
-
     <!-- Bootstrap JS -->
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
         integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous">

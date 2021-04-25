@@ -18,44 +18,46 @@
 
 <body>
     <header>
-        <h1 class="page-title">年齢サバ読みサポート</h1>
-        <p class="page-desc">年齢を入力すると生年月日、干支、入学卒業の年などを割り出します</p>
+        <div class="container">
+            <h1 class="page-title">年齢サバ読みサポート</h1>
+            <p class="page-desc">年齢を入力すると生年月日、干支、入学卒業の年などを割り出します</p>
+        </div>
     </header>
     <main>
         <div class="container">
             <form action="research.php" method="post">
-            <div>
-                <p for="age" class="">あなたはいま何歳ですか？<small>※サバ読みOK！</small></p>
-                <span class="label-attach">満</span>
-                <select name="age" id="age" class="age">
-                    <?php for ($i = 1; $i <= 100; $i++) {
+                <div>
+                    <p for="age" class="">あなたはいま何歳ですか？<small>※サバ読みOK！</small></p>
+                    <span class="label-attach">満</span>
+                    <select name="age" id="age" class="age">
+                        <?php for ($i = 1; $i <= 100; $i++) {
                         if ($i == 20) {
                             echo "<option value='$i' selected>$i</option>";
                         } else {
                             echo "<option value='$i'>$i</option>";
                         }
                     } ?>
-                </select>
-                <span class="label-attach">歳</span>
-            </div>
-            <div class="mt-4">
-                <p>お誕生日はいつですか？</p>
-                <select name="month" id="month" class="month">
-                    <?php for ($i = 1; $i <= 12; $i++) :
+                    </select>
+                    <span class="label-attach">歳</span>
+                </div>
+                <div class="mt-4">
+                    <p>お誕生日はいつですか？</p>
+                    <select name="month" id="month" class="month">
+                        <?php for ($i = 1; $i <= 12; $i++) :
                         echo "<option value='$i'>$i</option>";
                     endfor; ?>
-                </select>
-                <span class="label-attach">月</span>
-                <select name="day" id="day" class="day">
-                    <?php for ($i = 1; $i <= 31; $i++) :
+                    </select>
+                    <span class="label-attach">月</span>
+                    <select name="day" id="day" class="day">
+                        <?php for ($i = 1; $i <= 31; $i++) :
                         echo "<option value='$i'>$i</option>";
                     endfor; ?>
-                </select>
-                <span class="label-attach">日</span>
-            </div>
-            <div class="mt-4">
-                <button type="submit" class="btn research" id="research" onclick="">しらべる</button>
-            </div>
+                    </select>
+                    <span class="label-attach">日</span>
+                </div>
+                <div class="mt-4">
+                    <button type="submit" class="btn research" id="research" onclick="">しらべる</button>
+                </div>
             </form>
             <div class="mt-5">
                 <h1>サバ読みサポートとは？</h1>
