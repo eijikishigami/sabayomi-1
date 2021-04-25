@@ -66,13 +66,14 @@
                     年齢のサバを読んだ時の<br>
                     「干支は何どし？」<br>
                     「何年から社会人？」<br>
-                    などの質問の回答をサポートします。
+                    などの質問の回答をサポートします。<br>
                     素晴らしいサバ読みライフを。</p>
                 </section>
             </div>
         </div>
     </main>
     <footer>
+        <p class="copy-right">©︎ 2021 ESE</p>
     </footer>
     <!-- Bootstrap JS -->
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"

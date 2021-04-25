@@ -62,7 +62,7 @@ function culc_school_grade(DateTime $now, int $now_age, int $birth_month, int $b
     }
 
     if ($now_age >= GRADUATE_UNIV_YEAR_AGE) {
-        return '-';
+        return '大学卒業以降';
     } else if ($now_age >= ENTRY_UNIV_YEAR_AGE) {
         $school_name = '大学';
         $school_grade = $now_age - ENTRY_UNIV_YEAR_AGE + 1;
@@ -209,10 +209,12 @@ function culc_society_history(DateTime $now, int $now_age, int $birth_month, int
                     ?>
                 </p>
             </div>
+            <div id="page_back"><a href="#" onclick="history.back()"></a></div>
             <div id="page_top"><a href="#"></a></div>
         </div>
     </main>
     <footer>
+        <p class="copy-right">©︎ 2021 ESE</p>
     </footer>
     <!-- Bootstrap JS -->
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
