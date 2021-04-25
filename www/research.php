@@ -14,7 +14,7 @@ $now = new DateTime('now');
 // $now = new DateTime('2021-04-25');
 
 $birth_month = $_POST['month'];
-$birth_day = $_POST['day'];
+$birth_day = day_trim($birth_month, $_POST['day']);
 $birth_year = new Convertible_Year(culc_year($now, $age, $birth_month, $birth_day, 0));
 $eto = Culc_Eto::culc($birth_year->get_west())->get_name();
 $entry_jr_hi_scl_year = new Convertible_Year(culc_school_year($now, $age, $birth_month, $birth_day, ENTRY_JR_HI_SCL_YEAR_AGE));
@@ -27,6 +27,24 @@ $school_grade = culc_school_grade($now, $age, $birth_month, $birth_day);
 $society_history_hi_scl = culc_society_history($now, $age, $birth_month, $birth_day, GRADUATE_HI_SCL_YEAR_AGE); // 高卒社会人歴
 $society_history_univ = culc_society_history($now, $age, $birth_month, $birth_day, GRADUATE_UNIV_YEAR_AGE); // 大卒社会人歴
 
+function day_trim(int $month, int $day): int{
+    switch ($month) {
+        case 2:
+            if ($day > 29) {
+                return 28;
+            }
+            break;
+        case 4:
+        case 6:
+        case 9:
+        case 11:
+            if ($day > 30)
+            return 30;
+            break;
+    }
+    return $day;
+}
+
 function culc_year(DateTime $now, int $now_age, int $birth_month, int $birth_day, int $culc_age): int {
     $now_year = $now->format('Y');
     $result = $now_year - ($now_age - $culc_age);
@@ -36,6 +54,18 @@ function culc_year(DateTime $now, int $now_age, int $birth_month, int $birth_day
     }
     return $result;
 }
+
+function is_leap_year($year): bool {
+    return $year%4 == 0 && $year%100 != 0 || $year%400 == 0;
+}
+
+function is_illegal_date($year, $month, $day): bool {
+    if ($month == 2 && $day == 29 && !is_leap_year($year)) {
+        return true;
+    }
+    return false;
+}
+
 function culc_school_year(DateTime $now, int $now_age, int $birth_month, int $birth_day, int $culc_age): int {
     if (($birth_month * 100) + $birth_day <= 401) {
         // 誕生日が4月1日以前である場合
@@ -138,6 +168,11 @@ function culc_society_history(DateTime $now, int $now_age, int $birth_month, int
                         echo "あなたが{$age}歳({$birth_month}月{$birth_day}日生まれ)だとすると、、、";
                     ?>
                 </p>
+                <?php
+                    if (is_illegal_date($birth_year->get_west(), $birth_month, $birth_day)) {
+                        echo "<p class='error'>誕生日が正しくありません！</p>";
+                    }
+                ?>
             </div>
             <div>
                 <h1>生まれ年</h1>
