@@ -150,6 +150,7 @@ function culc_society_history(DateTime $now, int $now_age, int $birth_month, int
     <!-- Font Awesome -->
     <script src="https://kit.fontawesome.com/b8a7fea4d4.js"></script>
     <title>年齢から生年月日、干支、入学年、卒業年など計算|年齢サバ読みサポート</title>
+    <link rel="icon" type="image/x-icon" href="img/favicon.png">
 </head>
 
 <body>
@@ -244,7 +245,7 @@ function culc_society_history(DateTime $now, int $now_age, int $birth_month, int
                     ?>
                 </p>
             </div>
-            <div id="page_back"><a href="#" onclick="history.back()"></a></div>
+            <div id="page_back"><a onclick="history.back()"></a></div>
             <div id="page_top"><a href="#"></a></div>
         </div>
     </main>

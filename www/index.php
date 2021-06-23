@@ -14,6 +14,7 @@
     <!-- Font Awesome -->
     <script src="https://kit.fontawesome.com/b8a7fea4d4.js"></script>
     <title>年齢から生年月日、干支、入学年、卒業年など計算|年齢サバ読みサポート</title>
+    <link rel="icon" type="image/x-icon" href="img/favicon.png">
 </head>
 
 <body>
